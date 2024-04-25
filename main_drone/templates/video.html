@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drone detection</title>
+</head>
+<body>
+<center>
+    <h1>Drone detection using YOLOv8</h1>
+    <h3>Upload a video for detection</h3>
+    <form enctype="multipart/form-data" id="videoUploadForm">
+        <input type="file" name="video" id="videoInput" accept="video/*" onchange="loadVideo(event)"><br>
+        <video id="videoOutput" width="400" controls autoplay loop></video>
+        <input type="submit" value="Upload" id="submit">
+        <a href="/">Image Detection</a>
+    </form>
+
+    <div id="response"></div>
+
+    <script src="/static/video.js"></script>
+</center>
+</body>
+</html>

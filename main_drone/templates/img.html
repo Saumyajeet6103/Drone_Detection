@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drone detection</title>
+</head>
+<body>
+<center>
+    <h1>Drone detection using Yolov8</h1>
+    <h3>Upload an image for detection</h3>
+    <form enctype="multipart/form-data" id="imageUploadForm">
+        <input type="file" name="file" id="imageInput" onchange="loadImage(event)"><br>
+        <img id="imageOutput" width="200">
+        <input type="submit" value="Upload" id="submit">
+        <a href="video">Video Detection</a>
+    </form>
+
+    <div id="response"></div>
+
+    <script src="static/image.js"></script>
+</center>
+</body>
+</html>

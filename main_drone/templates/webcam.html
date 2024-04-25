@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Object Detection with Roboflow.js</title>
+    <script src="https://cdn.roboflow.com/0.2.26/roboflow.js"></script>
+</head>
+<body>
+    <h1>Drone Detection</h1>
+    <video id="webcam-video" width="640" height="480" autoplay></video>
+    
+    <script>
+        // Function to start webcam
+        async function startWebcam() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                const videoElement = document.getElementById('webcam-video');
+                videoElement.srcObject = stream;
+            } catch (error) {
+                console.error('Error accessing webcam:', error);
+            }
+        }
+
+        // Initialize your model
+        async function initializeModel() {
+            try {
+                const model = await roboflow.auth({
+                    publishable_key: "rf_sh0MYt9X31b4Xm7XO74ahqAZhA43"
+                }).load({
+                    model: "drone-5phov",
+                    version: 1 
+                });
+                return model;
+            } catch (error) {
+                console.error('Error initializing model:', error);
+            }
+        }
+
+        // Make predictions on the webcam stream
+        async function detectObjects() {
+            const model = await initializeModel();
+            const videoElement = document.getElementById('webcam-video');
+
+            model.detect(videoElement).then(function(predictions) {
+                console.log("Predictions:", predictions);
+                // Handle predictions here, e.g., draw bounding boxes on the video
+                // You can also update the UI with detected objects
+            }).catch(function(error) {
+                console.error("Error making predictions:", error);
+            });
+        }
+
+        // Start webcam and initiate object detection
+        window.onload = function() {
+            startWebcam();
+            setInterval(detectObjects, 1000); // Run object detection every second
+        };
+    </script>
+</body>
+</html>
