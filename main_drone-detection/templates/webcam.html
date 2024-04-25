@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Object Detection with Roboflow.js</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+            animation: slide-down 0.5s ease;
+        }
+        @keyframes slide-down {
+            from {
+                margin-top: -50px;
+            }
+            to {
+                margin-top: 0;
+            }
+        }
+        .navbar a {
+            float: left;
+            display: block;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        .navbar a:hover {
+            background-color: #555;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            animation: slide-up 0.5s ease;
+        }
+        @keyframes slide-up {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        #webcam-video {
+            display: block;
+            margin: 0 auto;
+            width: 100%;
+            max-width: 640px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+    <script src="https://cdn.roboflow.com/0.2.26/roboflow.js"></script>
+</head>
+<body>
+    <div class="navbar">
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+    </div>
+    <div class="container">
+        <h1>Drone Detection</h1>
+        <video id="webcam-video" width="640" height="480" autoplay></video>
+    </div>
+    
+    <script>
+        async function startWebcam() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                const videoElement = document.getElementById('webcam-video');
+                videoElement.srcObject = stream;
+            } catch (error) {
+                console.error('Error accessing webcam:', error);
+            }
+        }
+
+        async function initializeModel() {
+            try {
+                const model = await roboflow.auth({
+                    publishable_key: "rf_sh0MYt9X31b4Xm7XO74ahqAZhA43"
+                }).load({
+                    model: "drone-5phov",
+                    version: 1 
+                });
+                return model;
+            } catch (error) {
+                console.error('Error initializing model:', error);
+            }
+        }
+
+        async function detectObjects() {
+            const model = await initializeModel();
+            const videoElement = document.getElementById('webcam-video');
+
+            model.detect(videoElement).then(function(predictions) {
+                console.log("Predictions:", predictions);
+            }).catch(function(error) {
+                console.error("Error making predictions:", error);
+            });
+        }
+
+        window.onload = function() {
+            startWebcam();
+            setInterval(detectObjects, 1000);
+        };
+    </script>
+</body>
+</html>
